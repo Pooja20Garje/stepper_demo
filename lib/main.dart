@@ -11,6 +11,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -48,18 +49,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
+
+  int _activeStepIndex = 0;
+
+  List<Step> stepList() => [
+    Step(
+        state:
+        _activeStepIndex <= 0 ? StepState.editing : StepState.complete,
+        isActive: _activeStepIndex >= 0,
+        title: Text('Mobile no'),
+        content: PageOne()),
+    Step(
+        state:
+        _activeStepIndex <= 1 ? StepState.editing : StepState.complete,
+        isActive: _activeStepIndex >= 1,
+        title: Text('Sevekari'),
+        content: PageTwo()),
+    Step(
+        state:
+        _activeStepIndex <= 2 ? StepState.editing : StepState.complete,
+        isActive: _activeStepIndex >= 2,
+        title: Text('Kendra'),
+        content: Center(child: Text("Kendra"))),
+    Step(
+        state:
+        _activeStepIndex <= 3 ? StepState.editing : StepState.complete,
+        isActive: _activeStepIndex >= 3,
+        title: Text('Type'),
+        content: Center(child: Text("Type"))),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -73,43 +92,110 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text("title"),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
+      body: Stepper(
+        controlsBuilder: (BuildContext context, ControlsDetails details) {
+          return Row(
+            children: <Widget>[
+              TextButton(
+                onPressed: details.onStepContinue,
+                child: (_activeStepIndex == 0)
+                    ? const Text('SEARCH')
+                    : const Text('NEXT'),
+              ),
+              TextButton(
+                onPressed: details.onStepCancel,
+                child: const Text('CANCEL'),
+              ),
+            ],
+          );
+        },
+        type: StepperType.horizontal,
+        currentStep: _activeStepIndex,
+        steps: stepList(),
+        onStepContinue: () {
+          if (_activeStepIndex < (stepList().length - 1)) {
+            _activeStepIndex += 1;
+          }
+          setState(() {});
+        },
+        onStepCancel: () {
+          if (_activeStepIndex == 0) {
+            return;
+          }
+          _activeStepIndex -= 1;
+          setState(() {});
+        },
+      ),
+       // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+
+
+  Widget PageOne() {
+    return Container(
+      child: TextFormField(
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+            labelText: 'Mobile No',
+            hintText: 'Enter Mobile No'),
+      ),
+    );
+  }
+
+  Widget PageTwo() {
+    return Container(
+        width: double.infinity,
+        margin: EdgeInsets.all(0.0),
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+            border: Border.all(width: 0.5),
+            borderRadius: BorderRadius.circular(20)),
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+          children: [
+            TextFormField(
+              decoration: InputDecoration(
+                  labelText: 'Password', hintText: 'Enter secure password'),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+            TextFormField(
+              decoration: InputDecoration(
+                  labelText: 'Password', hintText: 'Enter secure password'),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              decoration: InputDecoration(
+                  labelText: 'Password', hintText: 'Enter secure password'),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
+            ),
+            TextFormField(
+              decoration: InputDecoration(
+                  labelText: 'Password', hintText: 'Enter secure password'),
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return 'Please enter your password';
+                }
+                return null;
+              },
             ),
           ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        ));
   }
 }
